@@ -2,6 +2,10 @@ import React from 'react'
 import TodoItem from "../MyComponents/TodoItem.js";
 
 const Todos = (props) => {// here we accept parameters called props from function
+   //console.log('Value of props.todos:', props.todos);
+  //console.log('Type of props.todos:', typeof props.todos);
+  
+  
   let myStyle={
     minHeight: "70 vh",
     margin: "40 px auto"
@@ -11,11 +15,13 @@ const Todos = (props) => {// here we accept parameters called props from functio
     <div className="container" style={myStyle}>
       <h3 className="my-3">Todos List</h3>
       {/* props.todos */}
-      {props.todos.length === 0 ? "No todos to display" : props.todos.map((todo) => {
-        return (
-        <>
-        <TodoItem todo={todo} key={props.sno} onDelete={props.onDelete} />  <hr/>
-        </>
+      {!Array.isArray(props.todos) || props.todos.length === 0 ? "No todos to display" : 
+          props.todos.map((todo) => {
+            console.log(todo.sno);
+            return (
+              <>
+                  <TodoItem todo={todo} key={props.sno} onDelete={props.onDelete} />  <hr/>
+              </>
         )
       })
       }
@@ -29,3 +35,7 @@ const Todos = (props) => {// here we accept parameters called props from functio
 }
 
 export default Todos
+
+Todos.defaultProps = {
+  todos: []
+}

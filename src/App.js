@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import Header from "./MyComponents/Header.js";
 import Todos from "./MyComponents/Todos.js";
@@ -9,16 +9,26 @@ import AddTodo from "./MyComponents/AddTodo.js";
 //const function here imported as {fn_name}
 
 function App() {
+  let initTodo;
+  if (localStorage.getItem("todos") === null) {
+    initTodo = [];
+  }
+  else {
+    initTodo = JSON.parse(localStorage.getItem("todos"));
+  }
   const onDelete = (todo)=>{
     console.log("I am ondelete of todo",todo);
     // Deleting wont occur this way, use state hooks
     // let ind=todos.indexOf(todo);
     // todos.splice(ind,1);
-    setTodos(todos.filter((e)=>{
-      return e!==todo;
-    }))
+    setTodos(todos.filter((e) => {
+      return e !== todo;
+    }));
+    console.log("deleted", todos);
+    localStorage.setItem("todos", JSON.stringify(todos));
+  
   }
-   const addTodo= (title,desc)=>{
+  const addTodo= (title,desc)=>{
       console.log("I am adding todo", title," with description ",desc);
       let sno;
       if(todos.length===0)
@@ -32,27 +42,16 @@ function App() {
         title:title,
         desc: desc
       }
-      console.log(myTodo);
       setTodos([...todos,myTodo]);
-
+      console.log(myTodo);
    }
-   const [todos, setTodos] = useState( [
-    {
-      sno: 1,
-      title: "Go to Market",
-      desc: "Buy Grocery"
-    },
-    {
-      sno: 2,
-      title: "Go to Mall",
-      desc: "Buy Earphones"
-    },
-    {
-      sno: 3,
-      title: "Go to Medicine Shop",
-      desc: "Buy Eno"
-    },
-  ])
+   
+  const [todos, setTodos] = useState(initTodo); //must be declared at top - hooks
+
+   // Update localStorage whenever todos changes
+   useEffect(() => {
+     localStorage.setItem("todos", JSON.stringify(todos));
+   }, [todos])
 
   return (
     <>
@@ -66,3 +65,51 @@ function App() {
 }
 
 export default App;
+
+// function App() {
+//   // 1. Initialize State first
+//   const [todos, setTodos] = useState(() => {
+//     const saved = localStorage.getItem("todos");
+//     return saved ? JSON.parse(saved) : [];
+//   });
+
+//   // 2. Define functions after state
+//   const onDelete = (todo) => {
+//     setTodos(prevTodos => prevTodos.filter(e => e !== todo));
+//   };
+
+//   const addTodo = (title, desc) => {
+//     const sno = todos.length === 0 ? 1 : todos[todos.length - 1].sno + 1;
+//     const myTodo = { sno, title, desc };
+    
+//     setTodos(prevTodos => [...prevTodos, myTodo]);
+//   };
+
+//   // 3. Side effects
+//   useEffect(() => {
+//     localStorage.setItem("todos", JSON.stringify(todos));
+//   }, [todos]);
+
+//   return (
+//     <>
+//       <Header title="My Todos List" searchbar={false}/>
+//       <AddTodo addTodo={addTodo}/>
+//       <Todos todos={todos} onDelete={onDelete}/>
+//       <Footer/>
+//     </>
+//   );
+// }
+// Ah, great question! So, the core issue is that the `setTodos` function from `useState` is
+//  asynchronous—React batches state updates for performance reasons. So, when you call
+//  `setTodos`, the state doesn’t instantly reflect the change in the very next line of your
+//  code. Instead, the update is scheduled,
+//  and React will re-render once that happens.
+
+// Now, if you rely on the updated state immediately—like counting items or triggering 
+//something right after—you might get stale or incorrect values. 
+// That's why we often use `useEffect`. The `useEffect` hook runs after the render, so once
+// the state update is complete, you can react to the new values. 
+// In short, `useEffect` ensures that any logic depending on your updated state runs at the 
+// right time—after the re-render—so the data is fresh and accurate. 
+// Once you think of it like that, it helps keep your app's state logic consistent and
+//  predictable.
