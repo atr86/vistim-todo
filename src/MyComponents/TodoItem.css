@@ -1,0 +1,94 @@
+.todo-item-container {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-left: 5px solid #007bff;
+  border-radius: 6px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.todo-item-container:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.todo-item-container h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.todo-item-container p {
+  margin: 0 0 15px 0;
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.time-target-info {
+  margin: 15px 0;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-left: 4px solid #17a2b8;
+  border-radius: 4px;
+  display: block;
+}
+
+.time-target-info small {
+  display: block;
+  color: #555;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.time-target-info .badge {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  display: inline-block;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.todo-actions {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.todo-actions .btn {
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.todo-actions .btn:hover {
+  transform: scale(1.05);
+}
+
+/* Badge color variants */
+.bg-danger {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+  color: #333 !important;
+}
+
+.bg-info {
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+}
+
+.bg-secondary {
+  background-color: #6c757d !important;
+  color: #fff !important;
+}

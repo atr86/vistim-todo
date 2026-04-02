@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import './TodoItem.css'
 
-const TodoItem = ({ todo, onDelete }) => {
+const TodoItem = ({ todo, onDelete, calculateTimeRemaining }) => {
+  const [timeLeft, setTimeLeft] = useState({ text: 'N/A', ms: 0 });
+
   // Helper function to display date in formatted way (ddmmyyyy to dd/mm/yyyy)
   const formatDisplayDate = (dateStr) => {
     if (!dateStr || dateStr.length !== 8) return dateStr;
@@ -10,24 +13,48 @@ const TodoItem = ({ todo, onDelete }) => {
     return `${day}/${month}/${year}`;
   };
 
+  // Update time remaining every second
+  useEffect(() => {
+    const updateTimeLeft = () => {
+      const result = calculateTimeRemaining(todo.timeTargetDate, todo.timeTargetTime);
+      setTimeLeft(result);
+    };
+
+    updateTimeLeft(); // Set initial value
+    const interval = setInterval(updateTimeLeft, 1000); // Update every second
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [todo.timeTargetDate, todo.timeTargetTime, calculateTimeRemaining]);
+
+  // Determine color based on time remaining
+  const getStatusColor = () => {
+    const ms = timeLeft.ms;
+    const hours = ms / (1000 * 60 * 60);
+    
+    if (ms <= 0) return 'danger'; // Overdue - red
+    if (hours < 1) return 'warning'; // Less than 1 hour - orange
+    if (hours < 24) return 'info'; // Less than 24 hours - blue
+    return 'secondary'; // More than 24 hours - gray
+  };
+
   return (
-    <>
-    <div>
-      {/*align="center"*/}
-      <h4 >{todo.title}</h4>
+    <div className="todo-item-container">
+      <h4>{todo.title}</h4>
       <p>{todo.desc}</p>
       {todo.timeTargetDate && todo.timeTargetTime && (
         <div className="time-target-info">
-          <small className="text-muted">
-            ⏰ Target: {formatDisplayDate(todo.timeTargetDate)} at {todo.timeTargetTime}
+          <small>
+            📅 Target: {formatDisplayDate(todo.timeTargetDate)} at {todo.timeTargetTime}
+          </small>
+          <small className={`badge bg-${getStatusColor()}`}>
+            ⏱️ {timeLeft.text}
           </small>
         </div>
       )}
-      <button className="btn btn-sm btn-danger" onClick={()=>{onDelete(todo)}}>Delete</button>
-      {/*function pass and not call... so not called at rendering otherwise*/}
+      <div className="todo-actions">
+        <button className="btn btn-sm btn-danger" onClick={()=>{onDelete(todo)}}>Delete</button>
+      </div>
     </div>
-    <hr/>
-    </>
   )
 }
 
