@@ -19,9 +19,7 @@ const Todos = (props) => {// here we accept parameters called props from functio
           props.todos.map((todo) => {
             console.log(todo.sno);
             return (
-              <>
-                  <TodoItem todo={todo} key={props.sno} onDelete={props.onDelete} />  <hr/>
-              </>
+                  <TodoItem todo={todo} key={todo.sno} onDelete={props.onDelete} /> 
         )
       })
       }

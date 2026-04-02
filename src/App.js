@@ -4,8 +4,15 @@ import Header from "./MyComponents/Header.js";
 import Todos from "./MyComponents/Todos.js";
 import Footer from "./MyComponents/Footer.js"
 import AddTodo from "./MyComponents/AddTodo.js";
+import About from "./MyComponents/About.js";
+import {
+  BrowserRouter as Router,
+  Routes, // Replaced Switch with Routes
+  Route
+} from "react-router-dom";
 
 
+//router- demostracte a component w/o pg reload
 //const function here imported as {fn_name}
 
 function App() {
@@ -54,13 +61,25 @@ function App() {
    }, [todos])
 
   return (
-    <>
-    <Header title="My Todos List" searchbar={false}/>
-    <AddTodo addTodo={addTodo}/>
-    <Todos todos={todos} onDelete={onDelete}/>
-    <Footer/>
+    <> 
+    <Router>
+      <Header title="My Todos List" searchBar={false} /> 
+      {/* Replaced Switch with Routes */}
+      <Routes>
+          {/* Replaced 'exact path' and 'render' with 'path' and 'element' */}
+          <Route path="/" element={
+            <>
+              <AddTodo addTodo={addTodo} />
+              <Todos todos={todos} onDelete={onDelete} /> 
+            </>
+          } /> 
+          
+          {/* Replaced child components with 'element' prop */}
+          <Route path="/about" element={<About />} /> 
+      </Routes> 
+      <Footer />
+    </Router>
     </>
-    
   );
 }
 
