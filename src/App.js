@@ -28,11 +28,17 @@ function App() {
     // Deleting wont occur this way, use state hooks
     // let ind=todos.indexOf(todo);
     // todos.splice(ind,1);
-    setTodos(todos.filter((e) => {
+    const filtered = todos.filter((e) => {
       return e !== todo;
+    });
+    // Re-label sno sequentially from 0
+    const relabeled = filtered.map((t, index) => ({
+      ...t,
+      sno: index
     }));
-    console.log("deleted", todos);
-    localStorage.setItem("todos", JSON.stringify(todos));
+    setTodos(relabeled);
+    console.log("deleted", relabeled);
+    localStorage.setItem("todos", JSON.stringify(relabeled));
   
   }
   const addTodo= (title,desc,timeTargetDate,timeTargetTime)=>{
