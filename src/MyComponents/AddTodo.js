@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
+import './AddTodo.css'
 
 // Helper function to format current date as yyyy-MM-dd
 const getCurrentDate = () => {
@@ -47,7 +48,7 @@ const AddTodo = ({ addTodo }) => {
     }
 
     return (
-        <div className='container'>
+        <div className='container add-todo-card'>
             <h3 className="my-3">Add a Todo</h3>
             <form onSubmit={submit}>
                 <div className="form-group">
