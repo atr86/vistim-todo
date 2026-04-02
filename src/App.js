@@ -35,8 +35,8 @@ function App() {
     localStorage.setItem("todos", JSON.stringify(todos));
   
   }
-  const addTodo= (title,desc)=>{
-      console.log("I am adding todo", title," with description ",desc);
+  const addTodo= (title,desc,timeTargetDate,timeTargetTime)=>{
+      console.log("I am adding todo", title," with description ",desc," and timeTarget ",timeTargetDate, timeTargetTime);
       let sno;
       if(todos.length===0)
         sno=0;
@@ -47,7 +47,9 @@ function App() {
       {
         sno: sno,
         title:title,
-        desc: desc
+        desc: desc,
+        timeTargetDate: timeTargetDate,
+        timeTargetTime: timeTargetTime
       }
       setTodos([...todos,myTodo]);
       console.log(myTodo);

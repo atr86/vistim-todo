@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+/* Time Target Styling */
+.time-target-info {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-left: 4px solid #007bff;
+  border-radius: 4px;
+  display: inline-block;
+  width: 100%;
+}
+
+.time-target-info small {
+  color: #666;
+  font-weight: 500;
+}
