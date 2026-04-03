@@ -5,6 +5,7 @@ import Todos from "./MyComponents/Todos.js";
 import Footer from "./MyComponents/Footer.js"
 import AddTodo from "./MyComponents/AddTodo.js";
 import About from "./MyComponents/About.js";
+import { topoSortTodos } from "./MyComponents/todoGraph.js";
 import {
   BrowserRouter as Router,
   Routes, // Replaced Switch with Routes
@@ -23,66 +24,73 @@ function App() {
   else {
     initTodo = JSON.parse(localStorage.getItem("todos"));
   }
-  const onDelete = (todo)=>{
-    console.log("I am ondelete of todo",todo);
-    // Deleting wont occur this way, use state hooks
-    // let ind=todos.indexOf(todo);
-    // todos.splice(ind,1);
-    const filtered = todos.filter((e) => {
-      return e !== todo;
-    });
-    // Re-label sno sequentially from 0
-    const relabeled = filtered.map((t, index) => ({
-      ...t,
-      sno: index
-    }));
-    setTodos(relabeled);
-    console.log("deleted", relabeled);
-    localStorage.setItem("todos", JSON.stringify(relabeled));
-  
-  }
-  const addTodo= (title,desc,timeTargetDate,timeTargetTime)=>{
-      console.log("I am adding todo", title," with description ",desc," and timeTarget ",timeTargetDate, timeTargetTime);
-      let sno;
-      if(todos.length===0)
-        sno=0;
-      else
-        sno= todos[todos.length-1].sno+1;
-      
-      const myTodo=
-      {
-        sno: sno,
-        title:title,
-        desc: desc,
-        timeTargetDate: timeTargetDate,
-        timeTargetTime: timeTargetTime
-      }
-      setTodos([...todos,myTodo]);
-      console.log(myTodo);
-   }
-   
-  const [todos, setTodos] = useState(initTodo); //must be declared at top - hooks
 
-   // Update localStorage whenever todos changes
-   useEffect(() => {
-     localStorage.setItem("todos", JSON.stringify(todos));
-   }, [todos])
+  const [todos, setTodos] = useState(initTodo.map(todo => ({
+    ...todo,
+    prereqs: todo.prereqs || [],
+    status: todo.status || 'pending'
+  })));
+  const [topoOrder, setTopoOrder] = useState([]);
+  const [hasCycle, setHasCycle] = useState(false);
+
+  const onDelete = (todo) => {
+    const filtered = todos.filter((t) => t.sno !== todo.sno);
+    const cleaned = filtered.map((t) => ({
+      ...t,
+      prereqs: (t.prereqs || []).filter(p => p !== todo.sno)
+    }));
+    setTodos(cleaned);
+  };
+
+  const addTodo = (title, desc, timeTargetDate, timeTargetTime, prereqs=[]) => {
+    const nextSno = todos.length === 0 ? 0 : Math.max(...todos.map(t => t.sno)) + 1;
+    const newTodo = {
+      sno: nextSno,
+      title,
+      desc,
+      timeTargetDate,
+      timeTargetTime,
+      prereqs,
+      status: 'pending'
+    };
+    setTodos(prev => [...prev, newTodo]);
+  };
+
+  const toggleDone = (sno) => {
+    setTodos(prev => prev.map(todo => {
+      if (todo.sno !== sno) return todo;
+      return {
+        ...todo,
+        status: todo.status === 'done' ? 'pending' : 'done'
+      };
+    }));
+  };
+
+  useEffect(() => {
+    const { order, hasCycle } = topoSortTodos(todos);
+    setTopoOrder(order);
+    setHasCycle(hasCycle);
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   return (
     <> 
     <Router>
       <Header title="My Todos List" searchBar={false} /> 
-      {/* Replaced Switch with Routes */}
+      <div className="container my-2">
+        {hasCycle ? (
+          <div className="alert alert-danger">Cycle detected in prerequisites. Fix dependencies.</div>
+        ) : (
+          <div className="alert alert-info">Topological order: {topoOrder.join(' → ')}</div>
+        )}
+      </div>
       <Routes>
-          {/* Replaced 'exact path' and 'render' with 'path' and 'element' */}
           <Route path="/" element={
             <>
-              <AddTodo addTodo={addTodo} />
-              <Todos todos={todos} onDelete={onDelete} /> 
+              <AddTodo addTodo={addTodo} todos={todos} />
+              <Todos todos={todos} onDelete={onDelete} onToggleDone={toggleDone} /> 
             </>
           } /> 
-          
-          {/* Replaced child components with 'element' prop */}
           <Route path="/about" element={<About />} /> 
       </Routes> 
       <Footer />

@@ -26,11 +26,12 @@ const formatDateToDDMMYYYY = (dateStr) => {
     return `${day}${month}${year}`;
 };
 
-const AddTodo = ({ addTodo }) => {
+const AddTodo = ({ addTodo, todos }) => {
     const [title, setTitle] = useState("");
     const [desc, setDesc] = useState("");
     const [timeTargetDate, setTimeTargetDate] = useState(getCurrentDate());
     const [timeTargetTime, setTimeTargetTime] = useState(getCurrentTime());
+    const [prereqs, setPrereqs] = useState([]);
 
     const submit = (e) => {
         e.preventDefault();//to prevent page reload
@@ -39,11 +40,12 @@ const AddTodo = ({ addTodo }) => {
         }
         else {
             const dateFormatted = formatDateToDDMMYYYY(timeTargetDate);
-            addTodo(title, desc, dateFormatted, timeTargetTime);
+            addTodo(title, desc, dateFormatted, timeTargetTime, prereqs);
             setTitle('');
             setDesc('');
             setTimeTargetDate(getCurrentDate());
             setTimeTargetTime(getCurrentTime());
+            setPrereqs([]);
         }
     }
 
@@ -72,6 +74,31 @@ const AddTodo = ({ addTodo }) => {
                     <label htmlFor="timeTargetTime">Target Time (hh:mm:ss)</label>
                     <input type="time" step="1" value={timeTargetTime} onChange={(e) => setTimeTargetTime(e.target.value)}
                         className="form-control" id="timeTargetTime" />
+                </div>
+
+                <div className="form-group">
+                    <label>Prerequisites</label>
+                    {todos && todos.length === 0 && <div className="text-muted">No existing todos yet</div>}
+                    {todos && todos.filter(t => t.status !== 'done').map((t) => (
+                        <div className="form-check" key={t.sno}>
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id={`prereq-${t.sno}`}
+                                value={t.sno}
+                                checked={prereqs.includes(t.sno)}
+                                onChange={(e) => {
+                                    const val = Number(e.target.value);
+                                    setPrereqs(prev =>
+                                        e.target.checked ? [...new Set([...prev, val])] : prev.filter(id => id !== val)
+                                    );
+                                }}
+                            />
+                            <label className="form-check-label" htmlFor={`prereq-${t.sno}`}>
+                                {t.title}
+                            </label>
+                        </div>
+                    ))}
                 </div>
 
                 <button type="submit" className="btn btn-sm btn-success mt-3">Add Todo</button>

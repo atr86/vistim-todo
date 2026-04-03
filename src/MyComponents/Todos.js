@@ -55,15 +55,25 @@ const Todos = (props) => {// here we accept parameters called props from functio
     margin: "40 px auto"
   }
 
+  const todoMap = new Map(props.todos.map(t => [t.sno, t]));
+
   return (
     <div className="container" style={myStyle}>
       <h3 className="my-3">Todos List</h3>
-      {/* props.todos */}
       {!Array.isArray(sortedTodos) || sortedTodos.length === 0 ? "No todos to display" : 
           sortedTodos.map((todo) => {
-            console.log(todo.sno);
+            const blocked = (todo.prereqs || []).some(id => todoMap.get(id)?.status !== 'done');
+            const prereqTitles = (todo.prereqs || []).map(id => todoMap.get(id)?.title || `#${id}`).filter(Boolean);
             return (
-                  <TodoItem todo={todo} key={todo.sno} onDelete={props.onDelete} calculateTimeRemaining={calculateTimeRemaining} /> 
+                  <TodoItem
+                    todo={todo}
+                    key={todo.sno}
+                    onDelete={props.onDelete}
+                    calculateTimeRemaining={calculateTimeRemaining}
+                    onToggleDone={props.onToggleDone}
+                    blocked={blocked}
+                    prereqTitles={prereqTitles}
+                  />
         )
       })
       }

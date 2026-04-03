@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './TodoItem.css'
 
-const TodoItem = ({ todo, onDelete, calculateTimeRemaining }) => {
+const TodoItem = ({ todo, onDelete, onToggleDone, calculateTimeRemaining, blocked, prereqTitles }) => {
   const [timeLeft, setTimeLeft] = useState({ text: 'N/A', ms: 0 });
 
   // Helper function to display date in formatted way (ddmmyyyy to dd/mm/yyyy)
@@ -37,10 +37,22 @@ const TodoItem = ({ todo, onDelete, calculateTimeRemaining }) => {
     return 'secondary'; // More than 24 hours - gray
   };
 
+  const statusBadgeClass = todo.status === 'done' ? 'success' : blocked ? 'warning' : 'primary';
+
   return (
     <div className="todo-item-container">
-      <h4>{todo.title}</h4>
+      <h4>
+        {todo.title}{' '}
+        <span className={`badge bg-${statusBadgeClass}`}>
+          {todo.status === 'done' ? 'Done' : blocked ? 'Blocked' : 'Ready'}
+        </span>
+      </h4>
       <p>{todo.desc}</p>
+      {prereqTitles && prereqTitles.length > 0 && (
+        <p>
+          <small>🔗 Prereqs: {prereqTitles.join(', ')}</small>
+        </p>
+      )}
       {todo.timeTargetDate && todo.timeTargetTime && (
         <div className="time-target-info">
           <small>
@@ -51,8 +63,14 @@ const TodoItem = ({ todo, onDelete, calculateTimeRemaining }) => {
           </small>
         </div>
       )}
-      <div className="todo-actions">
-        <button className="btn btn-sm btn-danger" onClick={()=>{onDelete(todo)}}>Delete</button>
+      <div className="todo-actions mt-2">
+        <button
+          className={`btn btn-sm ${todo.status === 'done' ? 'btn-secondary' : 'btn-success'} me-2`}
+          onClick={() => onToggleDone(todo.sno)}
+        >
+          {todo.status === 'done' ? 'Mark Pending' : 'Mark Done'}
+        </button>
+        <button className="btn btn-sm btn-danger" onClick={() => { onDelete(todo); }}>Delete</button>
       </div>
     </div>
   )
