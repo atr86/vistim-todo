@@ -56,6 +56,19 @@ function App() {
     setTodos(prev => [...prev, newTodo]);
   };
 
+  const getTimeRemainingMs = (todo) => {
+    if (!todo || !todo.timeTargetDate || !todo.timeTargetTime) return Number.POSITIVE_INFINITY;
+    const date = todo.timeTargetDate;
+    if (date.length !== 8) return Number.POSITIVE_INFINITY;
+    const day = date.slice(0, 2);
+    const month = date.slice(2, 4);
+    const year = date.slice(4, 8);
+    const dateTimeString = `${year}-${month}-${day}T${todo.timeTargetTime}`;
+    const target = new Date(dateTimeString);
+    if (Number.isNaN(target.getTime())) return Number.POSITIVE_INFINITY;
+    return target.getTime() - Date.now();
+  };
+
   const toggleDone = (sno) => {
     setTodos(prev => prev.map(todo => {
       if (todo.sno !== sno) return todo;
@@ -67,7 +80,7 @@ function App() {
   };
 
   useEffect(() => {
-    const { order, hasCycle } = topoSortTodos(todos);
+    const { order, hasCycle } = topoSortTodos(todos, getTimeRemainingMs);
     setTopoOrder(order);
     setHasCycle(hasCycle);
     localStorage.setItem("todos", JSON.stringify(todos));
@@ -81,7 +94,9 @@ function App() {
         {hasCycle ? (
           <div className="alert alert-danger">Cycle detected in prerequisites. Fix dependencies.</div>
         ) : (
-          <div className="alert alert-info">Topological order: {topoOrder.join(' → ')}</div>
+          <div className="alert alert-info">
+            Suggested order: {topoOrder.map(id => todos.find(todo => todo.sno === id)?.title || `#${id}`).join(' → ')}
+          </div>
         )}
       </div>
       <Routes>

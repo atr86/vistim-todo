@@ -1,7 +1,8 @@
 // Utility functions for task dependency graph (DAG) and topological sorting
 
-export function topoSortTodos(todos) {
+export function topoSortTodos(todos, getPriority = () => 0) {
   const allIds = todos.map(todo => todo.sno);
+  const todoById = new Map(todos.map(todo => [todo.sno, todo]));
   const indegree = new Map(allIds.map(id => [id, 0]));
   const adj = new Map(allIds.map(id => [id, []]));
 
@@ -18,14 +19,27 @@ export function topoSortTodos(todos) {
     if (indegree.get(id) === 0) queue.push(id);
   }
 
+  const sortQueue = () => {
+    queue.sort((a, b) => {
+      const aTodo = todoById.get(a);
+      const bTodo = todoById.get(b);
+      return getPriority(aTodo) - getPriority(bTodo);
+    });
+  };
+
+  sortQueue();
+
   const order = [];
   while (queue.length > 0) {
     const id = queue.shift();
     order.push(id);
     for (const next of (adj.get(id) || [])) {
       indegree.set(next, indegree.get(next) - 1);
-      if (indegree.get(next) === 0) queue.push(next);
+      if (indegree.get(next) === 0) {
+        queue.push(next);
+      }
     }
+    sortQueue();
   }
 
   const hasCycle = order.length !== todos.length;
