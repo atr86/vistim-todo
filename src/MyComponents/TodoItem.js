@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './TodoItem.css'
+import { buildPrereqChains, buildDependentChains, GraphSection } from './dependencyGraph'
 
 const TodoItem = ({ todo, onDelete, onToggleDone, calculateTimeRemaining, blocked, prereqTitles, allTodos }) => {
   const [timeLeft, setTimeLeft] = useState({ text: 'N/A', ms: 0 });
@@ -40,43 +41,8 @@ const TodoItem = ({ todo, onDelete, onToggleDone, calculateTimeRemaining, blocke
 
   const statusBadgeClass = todo.status === 'done' ? 'success' : blocked ? 'warning' : 'primary';
 
-  const getTodoById = (id) => allTodos.find(t => t.sno === id);
-
-  const buildPrereqChains = (currentTodo, visited = new Set()) => {
-    if (visited.has(currentTodo.sno)) return [[currentTodo]];
-    const nextTodos = (currentTodo.prereqs || [])
-      .map(getTodoById)
-      .filter(Boolean)
-      .filter(t => !visited.has(t.sno));
-
-    if (nextTodos.length === 0) return [[currentTodo]];
-
-    const nextVisited = new Set(visited);
-    nextVisited.add(currentTodo.sno);
-
-    return nextTodos.flatMap(prereq =>
-      buildPrereqChains(prereq, new Set(nextVisited)).map(chain => [...chain, currentTodo])
-    );
-  };
-
-  const buildDependentChains = (currentTodo, visited = new Set()) => {
-    if (visited.has(currentTodo.sno)) return [[currentTodo]];
-    const nextTodos = allTodos
-      .filter(t => (t.prereqs || []).includes(currentTodo.sno))
-      .filter(t => !visited.has(t.sno));
-
-    if (nextTodos.length === 0) return [[currentTodo]];
-
-    const nextVisited = new Set(visited);
-    nextVisited.add(currentTodo.sno);
-
-    return nextTodos.flatMap(dependent =>
-      buildDependentChains(dependent, new Set(nextVisited)).map(chain => [currentTodo, ...chain])
-    );
-  };
-
-  const dependencyChains = buildPrereqChains(todo).filter(chain => chain.length > 1);
-  const dependentChains = buildDependentChains(todo).filter(chain => chain.length > 1);
+  const dependencyChains = buildPrereqChains(todo, allTodos).filter(chain => chain.length > 1);
+  const dependentChains = buildDependentChains(todo, allTodos).filter(chain => chain.length > 1);
 
   return (
     <>
@@ -156,33 +122,5 @@ const TodoItem = ({ todo, onDelete, onToggleDone, calculateTimeRemaining, blocke
     </>
   )
 }
-
-const GraphSection = ({ title, chains, currentTodoId }) => {
-  return (
-    <div className="dependency-section">
-      <h6>{title}</h6>
-      {chains.map((chain, index) => (
-        <GraphChain key={`${chain[0].sno}-${index}`} chain={chain} currentTodoId={currentTodoId} />
-      ))}
-    </div>
-  );
-};
-
-const GraphChain = ({ chain, currentTodoId }) => {
-  return (
-    <div className="dependency-chain">
-      {chain.map((node, idx) => (
-        <React.Fragment key={`${node.sno}-${idx}`}>
-          <div className={`dependency-node ${node.sno === currentTodoId ? 'current-node' : ''}`}>
-            <span className={`badge bg-${node.status === 'done' ? 'success' : 'secondary'}`}>
-              {node.status === 'done' ? '✓' : '○'} {node.title}
-            </span>
-          </div>
-          {idx < chain.length - 1 && <span className="graph-arrow">→</span>}
-        </React.Fragment>
-      ))}
-    </div>
-  );
-};
 
 export default TodoItem
