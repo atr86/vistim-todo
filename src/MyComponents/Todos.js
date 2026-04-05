@@ -73,6 +73,7 @@ const Todos = (props) => {// here we accept parameters called props from functio
                     onToggleDone={props.onToggleDone}
                     blocked={blocked}
                     prereqTitles={prereqTitles}
+                    allTodos={props.todos}
                   />
         )
       })
