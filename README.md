@@ -6,6 +6,7 @@ A React-based task management application that helps you organize and prioritize
 
 - **Time-Targeted Tasks**: Set specific dates and times for task completion
 - **Dependency Management**: Create prerequisites between tasks to ensure proper sequencing
+- **Dependency Graph Visualization**: View task dependency chains with directed graphs showing both prerequisites and dependents
 - **Smart Ordering**: Automatic topological sorting suggests the best order to complete tasks
 - **Cycle Detection**: Prevents circular dependencies that would make tasks impossible to complete
 - **Persistent Storage**: Tasks are saved locally in your browser
@@ -53,6 +54,7 @@ npm start
 
 - When adding a todo, you can select other pending todos as prerequisites
 - The app will automatically suggest the optimal completion order
+- Use the dependency graph modal to visualize task chains with arrows showing prerequisites and dependent tasks
 - If you create circular dependencies, you'll see a warning message
 
 ### Completing Tasks
@@ -74,6 +76,7 @@ src/
 │   ├── Todos.js          # Todo list display
 │   ├── TodoItem.js       # Individual todo component
 │   ├── About.js          # About page
+│   ├── dependencyGraph.js# Dependency graph rendering and helpers
 │   └── todoGraph.js      # Topological sorting logic
 └── ...
 ```
