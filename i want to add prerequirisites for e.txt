@@ -1,1 +1,0 @@
-i want to add prerequirisites for each todo... without the prerequisites i cannot complete that todo. It will show a depedency graph and by topo sort on dag, will show how to complete it. I

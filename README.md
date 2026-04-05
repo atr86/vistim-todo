@@ -1,70 +1,113 @@
-# Getting Started with Create React App
+# Visual Timed Todo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based task management application that helps you organize and prioritize your todos with time targets and dependency management. Features intelligent task ordering using topological sorting to suggest the optimal completion sequence based on prerequisites and deadlines.
+
+## Features
+
+- **Time-Targeted Tasks**: Set specific dates and times for task completion
+- **Dependency Management**: Create prerequisites between tasks to ensure proper sequencing
+- **Smart Ordering**: Automatic topological sorting suggests the best order to complete tasks
+- **Cycle Detection**: Prevents circular dependencies that would make tasks impossible to complete
+- **Persistent Storage**: Tasks are saved locally in your browser
+- **Task Status Tracking**: Mark tasks as pending or completed
+- **Responsive Design**: Clean, modern interface that works on all devices
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd visual-timed-todo
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm start
+```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Usage
+
+### Adding a Todo
+
+1. Click on the "Add a Todo" section
+2. Fill in the task title and description
+3. Set the target date and time for completion
+4. (Optional) Select prerequisite tasks that must be completed first
+5. Click "Add Todo" to save
+
+### Managing Dependencies
+
+- When adding a todo, you can select other pending todos as prerequisites
+- The app will automatically suggest the optimal completion order
+- If you create circular dependencies, you'll see a warning message
+
+### Completing Tasks
+
+- Click the checkbox next to a todo to mark it as completed
+- Completed tasks are visually distinguished and removed from dependency calculations
+
+## Project Structure
+
+```
+src/
+├── App.js                 # Main application component
+├── App.css               # Application styles
+├── index.js              # Application entry point
+├── MyComponents/
+│   ├── Header.js         # Application header
+│   ├── Footer.js         # Application footer
+│   ├── AddTodo.js        # Todo creation form
+│   ├── Todos.js          # Todo list display
+│   ├── TodoItem.js       # Individual todo component
+│   ├── About.js          # About page
+│   └── todoGraph.js      # Topological sorting logic
+└── ...
+```
 
 ## Available Scripts
 
-In the project directory, you can run:
+- `npm start` - Runs the app in development mode
+- `npm test` - Launches the test runner
+- `npm run build` - Builds the app for production
+- `npm run eject` - Ejects from Create React App (irreversible)
 
-### `npm start`
+## Technologies Used
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **React** - Frontend framework
+- **React Router** - Client-side routing
+- **Bootstrap** - CSS framework for styling
+- **Local Storage** - Data persistence
+- **Topological Sorting** - Task ordering algorithm
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Contributing
 
-### `npm test`
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## License
 
-### `npm run build`
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Acknowledgments
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Built with Create React App
+- Uses topological sorting for intelligent task ordering
+- Inspired by modern task management applications
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
