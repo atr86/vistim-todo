@@ -25,7 +25,7 @@ A React-based task management application that helps you organize and prioritize
 1. Clone the repository:
 ```bash
 git clone https://github.com/atr86/vistim-todo.git
-cd visual-timed-todo
+cd vistim-todo
 ```
 
 2. Install dependencies:
